@@ -1,26 +1,31 @@
+// src/App.tsx
 import React from 'react';
-import logo from './logo.svg';
-import '../src/css/App.css';
+import DrumPad from '../src/components/DrumPad';
+import '../src/css/App.css'; // Import your CSS file for styling
 
-function App() {
+const App: React.FC = () => {
+  const drumSounds = [
+    'BassDrum.wav',
+    'SnareDrum.wav',
+    'LowTom.wav',
+    'MidTom.wav',
+    'HighTom.wav',
+    'RimShot.wav',
+    'Clap.wav',
+    'Closed HiHat.wav',
+    'Open HiHat.wav',
+  ];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="drum-machine">
+      <h1>Drum Machine</h1>
+      <div className="drum-pad-container">
+        {drumSounds.map((sound, index) => (
+          <DrumPad key={index} soundFile={sound} />
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
