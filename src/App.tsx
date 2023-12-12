@@ -2,6 +2,7 @@
 import React from 'react';
 import DrumPad from '../src/components/DrumPad';
 import '../src/css/App.css'; // Import your CSS file for styling
+import 'rc-slider/assets/index.css';
 
 const App: React.FC = () => {
   const drumSounds = [
