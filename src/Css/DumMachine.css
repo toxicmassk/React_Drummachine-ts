@@ -1,0 +1,12 @@
+/* src/css/DrumMachine.css */
+
+.drum-machine {
+    text-align: center;
+  }
+  
+  .drum-pad-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+  
