@@ -5,6 +5,7 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import '../css/DrumPad.css'; // Import the CSS file for DrumPad
 
+
 interface DrumPadProps {
     soundFile: string;
 }
@@ -12,27 +13,30 @@ interface DrumPadProps {
 const DrumPad: React.FC<DrumPadProps> = ({ soundFile }) => {
     const [sound, setSound] = useState<Howl | null>(null);
     const [controls, setControls] = useState({
-        level: 50,
+        volume: 50,
         pitch: 0,
         decay: 0.5,
         filter: 0,
     });
 
     useEffect(() => {
+        console.log('hi');
         const soundInstance = new Howl({
             src: [`/sounds/${soundFile}`],
-            volume: controls.level / 100,
+            volume: controls.volume / 100,
             rate: Math.pow(2, controls.pitch),
-            onend: () => {
-                setControls((prevControls) => ({ ...prevControls, level: 50, pitch: 0, decay: 0.5, filter: 0 }));
-            },
+            //onend: () => {
+            //setControls((prevControls) => ({ ...prevControls, volume: 50, pitch: 0, decay: 0.5, filter: 0 }));
+            //},
         });
         setSound(soundInstance);
 
         return () => {
             soundInstance.unload();
         };
-    }, [soundFile, controls]);
+    }, [controls.volume, controls.pitch]);
+
+
 
     const playSound = () => {
         if (sound) {
@@ -52,12 +56,12 @@ const DrumPad: React.FC<DrumPadProps> = ({ soundFile }) => {
                 {soundFile.replace('.wav', '').replace(/([A-Z])/g, ' $1').trim()}
             </button>
             <div className="controls">
-                <label>Level</label>
+                <label>Volume</label>
                 <Slider
                     min={0}
                     max={100}
-                    value={controls.level}
-                    onChange={(value) => handleControlChange('level', value)}
+                    value={controls.volume}
+                    onChange={(value) => handleControlChange('volume', value)}
                     range={false}
                 />
 

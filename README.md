@@ -13,3 +13,8 @@ Steps I did so far:
 
 - added onClick
 - adjusting Drumpads to have individual values
+
+______
+
+- what is Howl exactly doing?
+
