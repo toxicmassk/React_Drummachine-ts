@@ -23,3 +23,12 @@
 .drum-pad:hover {
   background-color: #45a049;
 }
+
+/* Add these styles to your existing CSS files */
+.sound-selector button.selected {
+  background-color: #45a049;
+}
+
+.step button.selected {
+  background-color: #45a049;
+}
