@@ -37,36 +37,48 @@ const App: React.FC = () => {
   );
 
   const [selectedSoundIndex, setSelectedSoundIndex] = useState<number | null>(null);
+  const [stepSequencers, setStepSequencers] = useState<boolean[][][]>(
+    Array.from({ length: drumSounds.length }, () =>
+      Array.from({ length: 16 }, () => Array(drumSounds.length).fill(false))
+    )
+  );
+
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const handleSoundSelect = (index: number) => {
     setSelectedSoundIndex(index);
-    setStepSequencer((prev) => prev.map(() => Array(drumSounds.length).fill(false)));
+    setCurrentStep(0);
   };
 
   const play = () => {
+    setIsPlaying((prev) => !prev);
+    setCurrentStep(0);
+
     const intervalId = setInterval(() => {
-      stepSequencer.forEach((steps, stepIndex) => {
-        steps.forEach((selected, soundIndex) => {
-          if (selected) {
+      if (isPlaying) {
+        drumSounds.forEach((sound, soundIndex) => {
+          if (stepSequencers[soundIndex][currentStep]) {
             const soundInstance = new Howl({
-              src: [`/sounds/${drumSounds[soundIndex]}`],
+              src: [`/sounds/${sound}`],
               volume: controlsRef.current.volume / 100,
               rate: 0,
             });
             soundInstance.play();
           }
         });
-      });
-      index = (index + 1) % 16;
+        setCurrentStep((prev) => (prev + 1) % 16);
+      } else {
+        clearInterval(intervalId);
+      }
     }, /* Calculate delay based on BPM */);
-
-    // ... existing code
   };
+
 
   return (
     <div className="drum-machine">
       <h1>Drum Machine</h1>
-      <button onClick={() => play()}>Play</button>
+      <button onClick={play}>{isPlaying ? 'Pause' : 'Play'}</button>
       <input
         type="range"
         min="0"
@@ -81,19 +93,25 @@ const App: React.FC = () => {
         ))}
       </div>
       <SoundSelector onSelect={handleSoundSelect} selectedSoundIndex={selectedSoundIndex} />
+
+
       <div className="step-sequencer">
-        {stepSequencer.map((steps, stepIndex) => (
-          <div key={stepIndex} className="step">
-            {steps.map((selected, soundIndex) => (
+        {drumSounds.map((sound, soundIndex) => (
+          <div key={soundIndex} className="step">
+            {Array.from({ length: 16 }).map((_, stepIndex) => (
               <button
-                key={soundIndex}
-                className={selected ? 'selected' : ''}
+                key={stepIndex}
+                className={stepIndex === currentStep ? 'selected' : ''}
                 onClick={() => {
-                  setStepSequencer((prev) =>
-                    prev.map((row, rowIndex) =>
-                      rowIndex === stepIndex
-                        ? row.map((value, colIndex) => (colIndex === selectedSoundIndex ? !value : value))
-                        : row
+                  setStepSequencers((prev) =>
+                    prev.map((soundRow, rowIndex) =>
+                      rowIndex === selectedSoundIndex
+                        ? [
+                          ...soundRow.slice(0, stepIndex),
+                          !soundRow[stepIndex],
+                          ...soundRow.slice(stepIndex + 1),
+                        ].map((value) => (Array.isArray(value) ? value : [value]))
+                        : soundRow
                     )
                   );
                 }}
@@ -102,6 +120,9 @@ const App: React.FC = () => {
           </div>
         ))}
       </div>
+
+
+
     </div>
   );
 };
